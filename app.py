@@ -146,7 +146,7 @@ def delete_task(task_id):
     return redirect(url_for("get_tasks"))
 
 
-@app.route("/get_categores")
+@app.route("/get_categories")
 def get_categories():
     categories = list(mongo.db.categories.find().sort("category_name", 1))
     return render_template("categories.html", categories=categories)
@@ -177,8 +177,14 @@ def edit_category(category_id):
     return render_template("edit_category.html", category=category)
 
 
-# REMOVE DEBUG TRUE BEFORE DEPLOYMENT!!
+@app.route("/delete_category/<category_id>")
+def delete_category(category_id):
+    mongo.db.categories.remove({"_id": ObjectId(category_id)})
+    flash("Category Successfully Deleted")
+    return redirect(url_for("get_categories"))
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
-            port=int(os.environ.get("PORT")),
-            debug=True)
+            port=int(os.environ.get("PORT"))
+            )
