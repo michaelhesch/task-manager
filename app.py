@@ -164,6 +164,19 @@ def add_category():
     return render_template("add_category.html")
 
 
+@app.route("/edit_category/<category_id>", methods=["GET", "POST"])
+def edit_category(category_id):
+    category = mongo.db.categories.find_one({"_id": ObjectId(category_id)})
+    if request.method == "POST":
+        submit = {
+            "category_name": request.form.get("category_name")
+        }
+        mongo.db.categories.update({"_id": ObjectId(category_id)}, submit)
+        flash("Category Sucessfully Updated")
+        return redirect(url_for('get_categories'))
+    return render_template("edit_category.html", category=category)
+
+
 # REMOVE DEBUG TRUE BEFORE DEPLOYMENT!!
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
